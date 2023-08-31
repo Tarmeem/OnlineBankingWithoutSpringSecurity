@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        .registration-container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+    <div th:if = "${param.success}"><div class="alert">Successfully registered.</div></div>
+        <h2>Customer Registration</h2>
+        <form th:action="@{/register}" method="post" th:object="${customer}">
+            <label for="customerName">Name:</label>
+            <input type="text" id="customerName" name="customerName" field="*{customerName}" required>
+            
+            <label for="phoneNo">Phone No:</label>
+            <input type="text" id="phoneNo" name="phoneNo" field="*{phoneNo}" required>
+            
+            <label for="customerEmail">Email:</label>
+            <input type="email" id="customerEmail" name="customerEmail" field="*{customerEmail}"  required>
+            
+            <label for="customerPassword">Password:</label>
+            <input type="password" id="customerPassword" name="customerPassword" field="*{customerPassword}" required>
+            
+            <label for="customerDOB">Date of Birth:</label>
+            <input type="date" id="customerDOB" name="customerDOB" field="*{customerDOB}" required>
+            
+            <label for="customerAddress">Address:</label>
+            <textarea id="customerAddress" name="customerAddress" rows="4" field="*{customerAddress}" required></textarea>
+            
+            <button type="submit">Register</button>
+            
+            <span>Already registered? <a th:href="@{/login}">Login
+                here</a></span>
+        </form>
+        <div th:if="${nameExists}" class="alert alert-danger">
+            Username already exists. Please choose a different Username.
+        </div>
+        <div th:if="${emailExists}" class="alert alert-danger">
+            Email already exists. Please choose a different Email.
+        </div>
+        <div th:if="${phoneNoExists}" class="alert alert-danger">
+            Phone No already exists. Please choose a different Phone No.
+        </div>
+    </div>
+</body>
+</html>

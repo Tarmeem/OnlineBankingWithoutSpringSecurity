@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Login Page</title>
+
+    <style>
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background-color: #f2f2f2;
+
+        }
+
+        .login-container {
+
+            width: 300px;
+
+            margin: 100px auto;
+
+            padding: 20px;
+
+            background-color: #fff;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        }
+
+        input[type="text"],
+        input[type="password"] {
+
+            width: 100%;
+
+            padding: 10px;
+
+            margin: 5px 0;
+
+            border: 1px solid #ccc;
+
+            border-radius: 3px;
+
+        }
+
+        button {
+
+            width: 100%;
+
+            padding: 10px;
+
+            background-color: #007bff;
+
+            border: none;
+
+            color: #fff;
+
+            cursor: pointer;
+
+        }
+
+        a {
+
+            text-decoration: none;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="login-container">
+
+        <h2>Login</h2>
+
+        <form th:action="@{/welcome}" method="post" th:object="${customer}">
+            <label for="customerName">Username:</label>
+            <input type="text" id="customerName" name="customerName" field="*{customerName}" required>
+            <label for="customerPassword">Password:</label>
+            <input type="password" id="customerPassword" name="customerPassword" field="*{customerPassword}" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>New user? <a th:href="@{/register}">Register here</a></p>
+    </div>
+
+</body>
+
+</html>
