@@ -23,11 +23,14 @@ import com.onlinebankingnew.onlinebankingnew.entity.PaymentTransferForm;
 import com.onlinebankingnew.onlinebankingnew.entity.Transaction;
 import com.onlinebankingnew.onlinebankingnew.service.AccountService;
 import com.onlinebankingnew.onlinebankingnew.service.CustomerService;
-import com.onlinebankingnew.onlinebankingnew.service.TransactionService;
+import com.onlinebankingnew.onlinebankingnew.service.EmailServiceImpl;
 import com.onlinebankingnew.onlinebankingnew.service.TransactionService;
 
 @Controller
 public class HomeContoller {
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     @Autowired
     private CustomerService customerService;
@@ -205,6 +208,10 @@ public class HomeContoller {
             if (acc.getAccountType().equals(accountType)) {
                 
                 accountService.addMoneytoAccount(acc.getAccountId(), amount);
+                String[] cc = {cust.getCustomerEmail()};
+                String body = "Account credited with "+amount + " Amount!"; 
+                emailService.sendMail( cust.getCustomerEmail() , cc, "Amount credited!!", body);
+
             }
         }
 
