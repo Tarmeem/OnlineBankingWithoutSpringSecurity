@@ -10,12 +10,13 @@
             padding: 0;
             /* background-image: url('background.jpg'); */
             background-image: url('/images/background.jpg');
-    
+
             background-size: cover;
-            
+
         }
-        h2{
-            color:red;
+
+        h2 {
+            color: red;
         }
 
         .navbar {
@@ -31,19 +32,16 @@
             padding: 14px 16px;
             text-decoration: none;
         }
-
         .navbar a:hover {
             background-color: #ddd;
             color: black;
         }
-
         .profile {
             float: left;
             display: flex;
             align-items: center;
             margin-right: 20px;
         }
-
         .profile-picture {
             width: 40px;
             height: 40px;
@@ -67,13 +65,15 @@
         <a th:href="@{/createaccount}">Create Account</a>
         <a th:href="@{/AccountDetails1}">View Accounts</a>
         <a th:href="@{/payment-transfer}">Payment Transfer</a>
+        <a th:href="@{/transaction-history}">Transactions</a>
+        <a th:href="@{/add-money}">Add Money</a>
 
         <div class="profile" style="float: right;">
-            <div class="profile-picture">JD</div>
+            <div class="profile-picture"> <span th:text="${username.substring(0,2).toUpperCase()}"></span></div>
         </div>
-        
+
         <a th:href="@{/login}" style="float: right;">Logout</a>
-        
+
 
     </div>
 
@@ -81,16 +81,12 @@
         <h2>Welcome to Online Banking System , <span th:text="${username}"></span></h2>
         <!-- Add more content and components here -->
         <!-- <h2>Welcome, <span th:text="${username}"></span></h2> -->
-<!-- Other welcome page content -->
+        <!-- Other welcome page content -->
 
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const username = 'Ashutosh '; // Replace with the actual username
-            const profilePicture = document.querySelector('.profile-picture');
-            profilePicture.textContent = username.slice(0, 2).toUpperCase();
-        });
+       
     </script>
 </body>
 

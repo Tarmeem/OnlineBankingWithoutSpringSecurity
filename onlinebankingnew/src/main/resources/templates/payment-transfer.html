@@ -1,41 +1,123 @@
-    <!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 
-    <head>
-        <title>Payment Transfer</title>
-        <!-- Add your CSS styling here -->
-    </head>
+<head>
+    <title>Payment Transfer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
 
-    <body>
-        <div class="navbar">
-            <!-- Your navigation bar links and profile info -->
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        .container {
+            background-color: white;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button[type="submit"] {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        .alert {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+
+        .alert-error {
+            background-color: #FF5733;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <!-- Your navigation bar links and profile info -->
+    </div>
+
+    <div class="container">
+        <div th:if="${errorOccurred}" class="alert alert-error">
+            Transfer failed: Source and target accounts cannot be the same.
         </div>
-
-        <div class="container">
-            <div th:if="${errorOccurred}" class="alert alert-error">
-                Transfer failed: Source and target accounts cannot be the same.
-            </div>
-            <div th:if = "${param.success}"><div class="alert">Transfer Successful.</div></div>
-            <h2>Payment Transfer</h2>
-            <form th:action="@{/payment-transfer}" method="post">
-                <label for="sourceAccount">Source Account:</label>
-                <select id="sourceAccount" name="sourceAccountId">
-                    <option th:each="account : ${sourceAccounts}" th:value="${account.accountId}"
-                        th:text="${account.accountNumber}"></option>
-                </select>
-
-                <label for="targetAccount">Target Account:</label>
-                <select id="targetAccount" name="targetAccountId">
-                    <option th:each="account : ${targetAccounts}" th:value="${account.accountId}"
-                        th:text="${account.accountNumber}"></option>
-                </select>
-
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" name="amount" required />
-
-                <button type="submit">Transfer</button>
-            </form>
+        <div th:if="${param.success}">
+            <div class="alert">Transfer Successful.</div>
         </div>
-    </body>
+        <h2>Payment Transfer</h2>
+        <form th:action="@{/payment-transfer}" method="post">
+            <label for="sourceAccount">Source Account:</label>
+            <select id="sourceAccount" name="sourceAccountId">
+                <option th:each="account : ${sourceAccounts}" th:value="${account.accountId}"
+                    th:text="${account.accountNumber}"></option>
+            </select>
 
-    </html>
+            <label for="targetAccount">Target Account:</label>
+            <select id="targetAccount" name="targetAccountId">
+                <option th:each="account : ${targetAccounts}" th:value="${account.accountId}"
+                    th:text="${account.accountNumber}"></option>
+            </select>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required />
+
+            <button type="submit">Transfer</button>
+        </form>
+    </div>
+    <button><a th:href="@{/welcome}">Back</a></button>
+</body>
+
+</html>

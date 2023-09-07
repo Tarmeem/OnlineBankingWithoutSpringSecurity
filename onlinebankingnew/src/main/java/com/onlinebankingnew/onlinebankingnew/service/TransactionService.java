@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.onlinebankingnew.onlinebankingnew.entity.Account;
@@ -58,5 +60,12 @@ public class TransactionService {
 		}
 		return d;
 	}
+
+	public List<Transaction> getTransactionsByCustomerId(Long customerId) {
+		return transactionrepo.findByAccount_Customer_CustomerIdOrderByTimestampDesc(customerId);
+	}
+	 public Page<Transaction> getTransactionsByCustomerId(Long customerId, Pageable pageable) {
+        return transactionrepo.findByAccount_Customer_CustomerIdOrderByTimestampDesc(customerId, pageable);
+    }
 
 }
