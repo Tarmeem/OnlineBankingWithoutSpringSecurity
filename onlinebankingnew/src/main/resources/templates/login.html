@@ -78,6 +78,8 @@
 
         <h2>Login</h2>
 
+        <p th:if = "${param.Error}">Username or Password is incorrect!</p>
+
         <form th:action="@{/welcome}" method="post" th:object="${customer}">
             <label for="customerName">Username:</label>
             <input type="text" id="customerName" name="customerName" field="*{customerName}" required>

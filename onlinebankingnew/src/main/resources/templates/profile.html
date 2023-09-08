@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Profile</title>
+    
+    <!-- Add your CSS styles here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .edit-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Profile</h1>
+    <div class="container">
+        <p th:if="${param.success}" class="success-message">Updated Successfully!!</p>
+        
+        <!-- Display customer details -->
+        <p><strong>Customer Name:</strong> <span th:text="${customer.customerName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${customer.customerEmail}"></span></p>
+        <p><strong>Phone Number:</strong> <span th:text="${customer.phoneNo}"></span></p>
+        <p><strong>Date of Birth:</strong> <span th:text="${customer.customerDOB}"></span></p>
+        <p><strong>Address:</strong> <span th:text="${customer.customerAddress}"></span></p>
+        
+        <!-- Button to edit profile -->
+        <a th:href="@{/edit-profile}" class="edit-button">Edit Profile</a>
+        <br><button><a th:href="@{/welcome}">Back</a></button>
+    </div>
+
+    <!-- Add any additional content or styling as needed -->
+</body>
+</html>

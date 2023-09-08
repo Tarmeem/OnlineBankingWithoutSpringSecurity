@@ -3,6 +3,7 @@ package com.onlinebankingnew.onlinebankingnew.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +42,8 @@ public class HomeContoller {
 
     @Autowired
     private TransactionService transactionService;
+
+    List<List<Transaction>> transactions;
 
     @GetMapping("/login")
     public String home() {
@@ -72,8 +76,8 @@ public class HomeContoller {
             session.setAttribute("username", username);
             return "redirect:/welcome";
         }
+        return "redirect:/login?Error";
 
-        return "login";
     }
 
     @GetMapping("/register")
@@ -164,14 +168,14 @@ public class HomeContoller {
                 account.setCustomer(customer); // Set the customer for the account
                 accountService.createAccount(account);
                 redirectAttributes.addFlashAttribute("accountCreated", true);
-                return "redirect:/welcome";
+                return "welcome";
             } else {
 
-                return "redirect:/error";
+                return "create-account-error";
             }
         } else {
 
-            return "redirect:/login";
+            return "login";
         }
     }
 
@@ -198,23 +202,22 @@ public class HomeContoller {
 
     @PostMapping("/add-money")
     public String addMoneyForm2(@RequestParam("accountType") String accountType,
-            @RequestParam("amount") double amount,Model model,
+            @RequestParam("amount") double amount, Model model,
             HttpSession httpSession) {
         String username = httpSession.getAttribute("username").toString();
         Customer cust = customerService.getCustomerByUsername(username);
         List<Account> accList = accountService.getAccountsByCustomer(cust);
-       
+
         for (Account acc : accList) {
             if (acc.getAccountType().equals(accountType)) {
-                
+
                 accountService.addMoneytoAccount(acc.getAccountId(), amount);
-                String[] cc = {cust.getCustomerEmail()};
-                String body = "Account credited with "+amount + " Amount!"; 
-                emailService.sendMail( cust.getCustomerEmail() , cc, "Amount credited!!", body);
+                String[] cc = { cust.getCustomerEmail() };
+                String body = "Account credited with " + amount + " Amount!";
+                emailService.sendMail(cust.getCustomerEmail(), cc, "Amount credited!!", body);
 
             }
         }
-
 
         model.addAttribute("message", "Money added successfully!"); // You can use this message in your Thymeleaf
                                                                     // template
@@ -224,10 +227,17 @@ public class HomeContoller {
 
     @PostMapping("/payment-transfer")
     public String transferAmount(@ModelAttribute("transferForm") PaymentTransferForm transferForm,
-            Model model) {
+            Model model, HttpSession httpSession) {
         // Get source and target account IDs from the form
         Long sourceAccountId = transferForm.getSourceAccountId();
         Long targetAccountId = transferForm.getTargetAccountId();
+
+        String username = httpSession.getAttribute("username").toString();
+        Customer cust = customerService.getCustomerByUsername(username);
+
+        Account a2 = accountService.getAccountById(targetAccountId);
+
+        Customer c2 = a2.getCustomer();
 
         // Get amount from the form
         Double amount = transferForm.getAmount();
@@ -239,6 +249,13 @@ public class HomeContoller {
 
         // Perform the transfer logic using accountService
         accountService.transferMoney(sourceAccountId, targetAccountId, amount);
+        String cc[] = { cust.getCustomerEmail() };
+        String cc2[] = { c2.getCustomerEmail() };
+
+        emailService.sendMail(cust.getCustomerEmail(), cc, "Payment Transfer successfully!",
+                "Amount debited!! with amount " + amount);
+        emailService.sendMail(c2.getCustomerEmail(), cc2, "Account Credited!",
+                "Amount credited!! with amount " + amount);
 
         model.addAttribute("successOccurred", true);
 
@@ -267,6 +284,76 @@ public class HomeContoller {
         // Handle case where customer is not found
         // You might want to redirect to an error page or show a message
         return "redirect:/login"; // Or any other appropriate action
+    }
+
+    // @PostMapping("/sendEmailStatement")
+    // public String sendStatement(HttpSession session) {
+    // String username = session.getAttribute("username").toString();
+    // Customer customer = customerService.getCustomerByUsername(username);
+    // List<Account> accList = accountService.getAccountsByCustomer(customer);
+    // String[] cc = { customer.getCustomerEmail() };
+
+    // List<Transaction> t1 = accList.get(0).getTransaction();
+    // List<Transaction> t2 = accList.get(1).getTransaction();
+    // List<Transaction> t3 = new ArrayList<>();
+    // t3.addAll(t1);
+    // t3.addAll(t2);
+
+    // emailService.sendMail(customer.getCustomerEmail(), cc, "Transaction
+    // History!!", t3.toString());
+
+    // return "redirect:/transaction-history?success";
+    // }
+    @PostMapping("/sendEmailStatement")
+    public String sendStatement(HttpSession session) {
+        String username = session.getAttribute("username").toString();
+        Customer customer = customerService.getCustomerByUsername(username);
+        List<Account> accList = accountService.getAccountsByCustomer(customer);
+        String recipientEmail = customer.getCustomerEmail();
+        String[] cc = { customer.getCustomerEmail() };
+
+        StringBuilder emailBody = new StringBuilder();
+        emailBody.append("Transaction History\n\n");
+        emailBody.append(String.format("%-15s %-10s %-10s\n", "Date", "Type", "Amount"));
+
+        for (Account account : accList) {
+            for (Transaction transaction : account.getTransaction()) {
+                emailBody.append(String.format("%-15s %-10s %-10s\n",
+                        transaction.getTimestamp(), transaction.getType(), transaction.getAmount()));
+            }
+        }
+
+        emailService.sendMail(recipientEmail, cc, "Transaction History", emailBody.toString());
+
+        return "redirect:/transaction-history?success";
+    }
+
+    @GetMapping("/profile")
+    public String viewProfile(Model model, HttpSession session) {
+        String username = session.getAttribute("username").toString();
+        Customer customer = customerService.getCustomerByUsername(username);
+        model.addAttribute("customer", customer);
+        return "profile";
+    }
+
+    @GetMapping("/edit-profile")
+    public String editProfile(Model model, HttpSession session) {
+        String username = session.getAttribute("username").toString();
+        Customer customer = customerService.getCustomerByUsername(username);
+        model.addAttribute("customer", customer);
+        return "edit-profile";
+    }
+
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute("customer") @Valid Customer updatedCustomer,
+            HttpSession session) {
+
+        String username = session.getAttribute("username").toString();
+        Customer cust = customerService.getCustomerByUsername(username);
+
+        customerService.update(cust.getCustomerId(), updatedCustomer);
+
+        return "redirect:/profile?success";
     }
 
 }

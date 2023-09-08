@@ -93,6 +93,7 @@
 
     <div class="container">
         <h2>Transaction History</h2>
+        <p th:if="${param.success}">Mail Sent Successfully!</p>
         <table>
             <thead>
                 <tr>
@@ -120,7 +121,9 @@
         </nav>
         
     </div>
+    <div><form th:action="sendEmailStatement" method="post"><button type="submit">Email Statement</button></form></div>
     <button><a th:href="@{/welcome}">Back</a></button>
 </body>
+
 
 </html>

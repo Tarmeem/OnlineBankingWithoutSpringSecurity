@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile</title>
+    
+    <!-- Add your CSS styles here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background-color: #ccc;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary:hover {
+            background-color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Profile</h1>
+    <div class="container">
+        <form th:action="@{/update-profile}" method="post" th:object="${customer}">
+            <!-- Customer Name -->
+            <div class="form-group">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" class="form-control" id="customerName" name="customerName" th:value="${customer.customerName}" required>
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+                <label for="customerEmail">Email:</label>
+                <input type="email" class="form-control" id="customerEmail" name="customerEmail" th:value="${customer.customerEmail}" required>
+            </div>
+            <div class="form-group">
+                <label for="customerPassword">Password:</label>
+                <input type="password" class="form-control" id="customerPassword" name="customerPassword" th:value="${customer.customerPassword}" required>
+            </div>
+            
+            <!-- Phone Number -->
+            <div class="form-group">
+                <label for="phoneNo">Phone Number:</label>
+                <input type="tel" class="form-control" id="phoneNo" name="phoneNo" th:value="${customer.phoneNo}" required>
+            </div>
+            
+            <!-- Date of Birth -->
+            <div class="form-group">
+                <label for="customerDOB">Date of Birth:</label>
+                <input type="date" class="form-control" id="customerDOB" name="customerDOB" th:value="${customer.customerDOB}" required>
+            </div>
+            
+            <!-- Address -->
+            <div class="form-group">
+                <label for="customerAddress">Address:</label>
+                <textarea class="form-control" id="customerAddress" name="customerAddress" required th:text="${customer.customerAddress}"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form><br>
+        <a th:href="@{/profile}" class="btn btn-secondary">Cancel</a>
+        
+    </div>
+    
+
+    <!-- Add any additional content or styling as needed -->
+</body>
+</html>
